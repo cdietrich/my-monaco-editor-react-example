@@ -3,7 +3,9 @@
 // import viteLogo from '/vite.svg'
 // import './App.css'
 import { MonacoEditorReactComp } from '@typefox/monaco-editor-react'
+import { buildWorkerDefinition } from 'monaco-editor-workers';
 
+buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
 
 const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}) => {
   const serviceConfig = {
