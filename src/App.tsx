@@ -4,18 +4,19 @@
 // import './App.css'
 import { MonacoEditorReactComp } from '@typefox/monaco-editor-react'
 import { buildWorkerDefinition } from 'monaco-editor-workers';
+import { Uri } from 'vscode';
+import { useOpenEditorStub } from 'monaco-languageclient';
+import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
+import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
 
 buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
 
 const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}) => {
   const serviceConfig = {
-    enableModelService: true,
-    configureEditorOrViewsService: {},
-    configureConfigurationService: {
-      defaultWorkspaceUri: '/tmp/',
+    userServices: {
+      ...getConfigurationServiceOverride(Uri.file('/workspace')),
+      ...getEditorServiceOverride(useOpenEditorStub),
     },
-    enableLanguagesService: true,
-    enableKeybindingsService: true,
     debugLogging: true,
   };
   const languageId = 'hello';
