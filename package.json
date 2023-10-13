@@ -10,8 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@codingame/monaco-vscode-configuration-service-override": "^1.82.6",
     "@codingame/monaco-vscode-editor-service-override": "^1.82.6",
-    "@typefox/monaco-editor-react": "^2.2.3",
+    "@typefox/monaco-editor-react": "^2.2.5",
     "monaco-editor-workers": "^0.43.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
