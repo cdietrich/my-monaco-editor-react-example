@@ -3,24 +3,25 @@
 // import viteLogo from '/vite.svg'
 // import './App.css'
 import { MonacoEditorReactComp } from '@typefox/monaco-editor-react'
+import { UserConfig, WrapperConfig } from 'monaco-editor-wrapper'
 import { buildWorkerDefinition } from 'monaco-editor-workers';
-import { Uri } from 'vscode';
-import { useOpenEditorStub } from 'monaco-languageclient';
-import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
-import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
+// import { Uri } from 'vscode';
+// import { useOpenEditorStub } from 'monaco-languageclient';
+// import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
+// import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
 
 buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
 
 const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}) => {
   const serviceConfig = {
-    userServices: {
-      ...getConfigurationServiceOverride(Uri.file('/workspace')),
-      ...getEditorServiceOverride(useOpenEditorStub),
-    },
+    // userServices: {
+    //   ...getConfigurationServiceOverride(Uri.file('/workspace')),
+    //   ...getEditorServiceOverride(useOpenEditorStub),
+    // },
     debugLogging: true,
   };
   const languageId = 'hello';
-  const wrapperConfig = {
+  const wrapperConfig: WrapperConfig = {
     serviceConfig,
     editorAppConfig: {
       $type: 'classic' as const,
@@ -35,18 +36,15 @@ const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}) =>
       //languageDef: monarchGrammar,
       // themeData: LangiumTheme,
       // theme: 'langium-theme',
-      userConfiguration: {
-        //   // or configure the semantic highlighting like this:
-        //   // `{ json: "editor.semanticHighlighting.enabled": true }`
-        json: '{"editor.semanticHighlighting.enabled": true}',
-      },
+      // userConfiguration: {
+      //   //   // or configure the semantic highlighting like this:
+      //   //   // `{ json: "editor.semanticHighlighting.enabled": true }`
+      //   json: '{"editor.semanticHighlighting.enabled": true}',
+      // },
     },
-    // languageExtensionConfig: {
-    //   id: languageId,
-    // },
   };
 
-  const userConfig = {
+  const userConfig: UserConfig = {
     wrapperConfig,
     languageClientConfig: {
       options: {
