@@ -5,21 +5,22 @@
 import { MonacoEditorReactComp } from '@typefox/monaco-editor-react'
 import { UserConfig, WrapperConfig } from 'monaco-editor-wrapper'
 import { buildWorkerDefinition } from 'monaco-editor-workers';
-// import { Uri } from 'vscode';
+import { Uri } from 'vscode';
 // import { useOpenEditorStub } from 'monaco-languageclient';
-// import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
+import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
 // import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
-
+import { RegisteredFileSystemProvider, registerFileSystemOverlay, RegisteredMemoryFile } from '@codingame/monaco-vscode-files-service-override';
 buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
 
 const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}) => {
   const serviceConfig = {
-    // userServices: {
-    //   ...getConfigurationServiceOverride(Uri.file('/workspace')),
+    userServices: {
+      ...getConfigurationServiceOverride(Uri.file('/workspace')),
     //   ...getEditorServiceOverride(useOpenEditorStub),
-    // },
+    },
     debugLogging: true,
   };
+  
   const languageId = 'hello';
   const wrapperConfig: WrapperConfig = {
     serviceConfig,
@@ -61,6 +62,10 @@ const lsWorker = new Worker(workerURL.href, {
   type: 'classic' as const,
   name: 'hello-world-language-server-worker'
 });
+
+const fileSystemProvider = new RegisteredFileSystemProvider(true);
+fileSystemProvider.registerFile(new RegisteredMemoryFile(Uri.file('/workspace/other.hello'), 'person Xxxxx person Yyyyyy'));
+registerFileSystemOverlay(1, fileSystemProvider); 
 
 function App() {
 
