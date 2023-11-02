@@ -11,6 +11,7 @@ import getConfigurationServiceOverride from '@codingame/monaco-vscode-configurat
 // import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
 import { RegisteredFileSystemProvider, registerFileSystemOverlay, RegisteredMemoryFile } from '@codingame/monaco-vscode-files-service-override';
 import MonacoEditorReactCompExtended from './MonacoEditorReactCompExtended';
+import { useState } from 'react';
 buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
 
 const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}) => {
@@ -79,17 +80,30 @@ function App() {
     console.log("mimiimi");
   }
 
+  const [otherFileUri, setOtherFileUri] = useState<string>("memory://others-demo.hello");
+  const [otherFileContent, setOtherFileContent] = useState<string>("person Person1 person Person2");
+
+  function handleOnClick() {
+    console.log("handleOnClick");
+    setOtherFileUri("memory://others-demo2.hello");
+    setOtherFileContent("person Person3 person Person4");
+  }
+
   return (
     <div>
+      <button onClick={handleOnClick}>Click Me!</button>
       <MonacoEditorReactCompExtended
       key={new Date().toISOString()}
     userConfig={userConfig}
     onLoad={onLoad}
+    otherFileUri={otherFileUri}
+    otherFileContent={otherFileContent}
     style={{
       paddingTop: '5px',
       height: '40vh',
       width: '100%',
     }}
+    
         />
     </div>
   )

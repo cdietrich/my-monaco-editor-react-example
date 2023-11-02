@@ -1,19 +1,24 @@
 import { MonacoEditorProps, MonacoEditorReactComp } from "@typefox/monaco-editor-react";
 
 export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp {
-    constructor(props: MonacoEditorProps) {
-        super(props);
+    constructor(private propsExt: MonacoEditorPropsExtended) {
+        super(propsExt);
     }
     override async componentDidMount() {
         await super.componentDidMount();
         const lc = this.getEditorWrapper().getLanguageClient();
         await lc?.sendNotification("textDocument/didOpen", {
             textDocument: {
-                uri: "memory://others-demo.hello",
+                uri: this.propsExt.otherFileUri,
                 version: 1,
-                text: "person Person1 person Person2",
+                text: this.propsExt.otherFileContent,
                 languageId: "hello"
             }
         });
     }
 }
+
+export type MonacoEditorPropsExtended = MonacoEditorProps & {
+    otherFileContent: string;
+    otherFileUri: string;
+};
