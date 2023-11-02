@@ -10,6 +10,7 @@ import { Uri } from 'vscode';
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
 // import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
 import { RegisteredFileSystemProvider, registerFileSystemOverlay, RegisteredMemoryFile } from '@codingame/monaco-vscode-files-service-override';
+import MonacoEditorReactCompExtended from './MonacoEditorReactCompExtended';
 buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
 
 const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}) => {
@@ -74,11 +75,16 @@ function App() {
     uri: "demo.hello"
   } )
 
+  const onLoad = () => {
+    console.log("mimiimi");
+  }
+
   return (
     <div>
-      <MonacoEditorReactComp
+      <MonacoEditorReactCompExtended
       key={new Date().toISOString()}
     userConfig={userConfig}
+    onLoad={onLoad}
     style={{
       paddingTop: '5px',
       height: '40vh',
