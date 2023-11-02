@@ -71,6 +71,7 @@ function App() {
   const [otherFileContent, setOtherFileContent] = useState<string>("person Person1 person Person2");
 
   const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
+  // TODO find out why the component wiredly recycles the old worker otherwise
   workerURL.searchParams.set('xxxx', otherFileUri);
   const lsWorker = new Worker(workerURL.href, {
     type: 'classic' as const,
@@ -96,7 +97,7 @@ function App() {
     <div>
       <button onClick={handleOnClick}>Click Me!</button>
       <MonacoEditorReactCompExtended
-    key={new Date().toISOString()}  
+    key={new Date().toISOString() /* without this the updated monaco seems to not usable at all */}  
     userConfig={userConfig}
     onLoad={onLoad}
     otherFileUri={otherFileUri}
