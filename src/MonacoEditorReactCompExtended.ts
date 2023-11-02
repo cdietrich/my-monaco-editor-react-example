@@ -5,8 +5,10 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
         super(propsExt);
     }
     override async componentDidMount() {
+        console.log("didMount")
         await super.componentDidMount();
         const lc = this.getEditorWrapper().getLanguageClient();
+        console.log("lc", lc !== undefined);
         await lc?.sendNotification("textDocument/didOpen", {
             textDocument: {
                 uri: this.propsExt.otherFileUri,
@@ -15,6 +17,11 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
                 languageId: "hello"
             }
         });
+    }
+
+    override async componentDidUpdate(prevProps: MonacoEditorPropsExtended) {
+        console.log("argggggg ", prevProps.otherFileUri)
+        return super.componentDidUpdate(prevProps);
     }
 }
 

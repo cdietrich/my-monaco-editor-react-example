@@ -59,17 +59,23 @@ const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}) =>
   return userConfig;
 };
 
-const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
-const lsWorker = new Worker(workerURL.href, {
-  type: 'classic' as const,
-  name: 'hello-world-language-server-worker'
-});
 
-const fileSystemProvider = new RegisteredFileSystemProvider(true);
-fileSystemProvider.registerFile(new RegisteredMemoryFile(Uri.file('/workspace/other.hello'), 'person Xxxxx person Yyyyyy'));
-registerFileSystemOverlay(1, fileSystemProvider); 
+
+// const fileSystemProvider = new RegisteredFileSystemProvider(true);
+// fileSystemProvider.registerFile(new RegisteredMemoryFile(Uri.file('/workspace/other.hello'), 'person Xxxxx person Yyyyyy'));
+// registerFileSystemOverlay(1, fileSystemProvider); 
 
 function App() {
+
+  const [otherFileUri, setOtherFileUri] = useState<string>("memory://others-demo.hello");
+  const [otherFileContent, setOtherFileContent] = useState<string>("person Person1 person Person2");
+
+  const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
+  workerURL.searchParams.set('xxxx', otherFileUri);
+  const lsWorker = new Worker(workerURL.href, {
+    type: 'classic' as const,
+    name: 'hello-world-language-server-worker'
+  });
 
   const userConfig = getUserConfig(lsWorker, {
     code: "person A Hello A!",
@@ -77,23 +83,20 @@ function App() {
   } )
 
   const onLoad = () => {
-    console.log("mimiimi");
+    console.log("mimiimi onLoad");
   }
-
-  const [otherFileUri, setOtherFileUri] = useState<string>("memory://others-demo.hello");
-  const [otherFileContent, setOtherFileContent] = useState<string>("person Person1 person Person2");
 
   function handleOnClick() {
     console.log("handleOnClick");
     setOtherFileUri("memory://others-demo2.hello");
     setOtherFileContent("person Person3 person Person4");
   }
-
+  // 
   return (
     <div>
       <button onClick={handleOnClick}>Click Me!</button>
       <MonacoEditorReactCompExtended
-      key={new Date().toISOString()}
+    key={new Date().toISOString()}  
     userConfig={userConfig}
     onLoad={onLoad}
     otherFileUri={otherFileUri}
