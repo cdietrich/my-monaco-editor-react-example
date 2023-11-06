@@ -1,8 +1,10 @@
 import { MonacoEditorProps, MonacoEditorReactComp } from "@typefox/monaco-editor-react";
+// import { Component } from "react";
 
 // TODO is subclassing the right idea? 
 // or should we just use composition/wrapping?
-export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp {
+export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
+/*implements Component<MonacoEditorPropsExtended>*/ {
     constructor(private propsExt: MonacoEditorPropsExtended) {
         super(propsExt);
     }

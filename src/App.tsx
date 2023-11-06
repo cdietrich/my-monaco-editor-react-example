@@ -2,19 +2,19 @@
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 // import './App.css'
-import { MonacoEditorReactComp } from '@typefox/monaco-editor-react'
+// import { MonacoEditorReactComp } from '@typefox/monaco-editor-react'
 import { UserConfig, WrapperConfig } from 'monaco-editor-wrapper'
 import { buildWorkerDefinition } from 'monaco-editor-workers';
 import { Uri } from 'vscode';
 // import { useOpenEditorStub } from 'monaco-languageclient';
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
 // import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
-import { RegisteredFileSystemProvider, registerFileSystemOverlay, RegisteredMemoryFile } from '@codingame/monaco-vscode-files-service-override';
+// import { RegisteredFileSystemProvider, registerFileSystemOverlay, RegisteredMemoryFile } from '@codingame/monaco-vscode-files-service-override';
 import MonacoEditorReactCompExtended from './MonacoEditorReactCompExtended';
 import { useState } from 'react';
 buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
 
-const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}) => {
+const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}): UserConfig => {
   const serviceConfig = {
     userServices: {
       ...getConfigurationServiceOverride(Uri.file('/workspace')),
@@ -100,8 +100,8 @@ function App() {
     key={new Date().toISOString() /* without this the updated monaco seems to not usable at all */}  
     userConfig={userConfig}
     onLoad={onLoad}
-    otherFileUri={otherFileUri}
     otherFileContent={otherFileContent}
+    otherFileUri={otherFileUri}
     style={{
       paddingTop: '5px',
       height: '40vh',
