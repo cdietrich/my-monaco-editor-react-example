@@ -68,6 +68,7 @@ const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}): U
 function App() {
 
   const [otherFileUri, setOtherFileUri] = useState<string>("memory://others-demo.hello");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [otherFileContent, setOtherFileContent] = useState<string>("person Person1 person Person2");
 
   const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
@@ -94,7 +95,7 @@ function App() {
   }
   // 
   return (
-    <div>
+    <div className="lulu">
       <button onClick={handleOnClick}>Click Me!</button>
       <MonacoEditorReactCompExtended
     key={new Date().toISOString() /* without this the updated monaco seems to not usable at all */}  
