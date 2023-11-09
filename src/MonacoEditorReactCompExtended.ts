@@ -5,8 +5,8 @@ import { MonacoEditorProps, MonacoEditorReactComp } from "@typefox/monaco-editor
 // or should we just use composition/wrapping?
 export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp<MonacoEditorPropsExtended>
 /*implements Component<MonacoEditorPropsExtended>*/ {
-    constructor(private propsExt: MonacoEditorPropsExtended) {
-        super(propsExt);
+    constructor(props: MonacoEditorPropsExtended) {
+        super(props);
     }
 
     override async componentDidMount() {
@@ -14,16 +14,25 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
         return await super.componentDidMount();
     }
 
+    protected isReInitRequired(prevProps: MonacoEditorPropsExtended): boolean {
+        const result = super.isReInitRequired(prevProps)
+            || prevProps.otherFileContent !== this.props.otherFileContent
+            || prevProps.otherFileUri !== this.props.otherFileUri
+        console.log("isReInitRequired", result)
+        return result
+    }
+
     override async startMonaco() {
-        console.log("didMount")
+        console.log("startMonaco")
         await super.startMonaco();
         const lc = this.getEditorWrapper().getLanguageClient();
         console.log("lc", lc !== undefined);
+        console.log(this.props.otherFileContent)
         await lc?.sendNotification("textDocument/didOpen", {
             textDocument: {
-                uri: this.propsExt.otherFileUri,
+                uri: this.props.otherFileUri,
                 version: 1,
-                text: this.propsExt.otherFileContent,
+                text: this.props.otherFileContent,
                 languageId: "hello"
             }
         });

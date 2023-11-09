@@ -80,7 +80,7 @@ function App() {
   });
 
   const userConfig = getUserConfig(lsWorker, {
-    code: "person A Hello A!",
+    code: "person A Hello A! Hello Person1!",
     uri: "demo.hello"
   } )
 
@@ -98,7 +98,7 @@ function App() {
     <div className="lulu">
       <button onClick={handleOnClick}>Click Me!</button>
       <MonacoEditorReactCompExtended
-    key={new Date().toISOString() /* without this the updated monaco seems to not usable at all */}  
+    // key={new Date().toISOString() /* without this the updated monaco seems to not usable at all */}  
     userConfig={userConfig}
     onLoad={onLoad}
     otherFileContent={otherFileContent}
