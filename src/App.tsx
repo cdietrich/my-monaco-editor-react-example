@@ -71,9 +71,14 @@ function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [otherFileContent, setOtherFileContent] = useState<string>("person Person1 person Person2");
 
+  // const workerRef = useRef<Worker>();
+  // useEffect(() => {
+  //   workerRef.current = new Wo
+  // }, []);
+
   const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
   // TODO find out why the component wiredly recycles the old worker otherwise
-  workerURL.searchParams.set('xxxx', otherFileUri);
+  // workerURL.searchParams.set('xxxx', otherFileUri);
   const lsWorker = new Worker(workerURL.href, {
     type: 'classic' as const,
     name: 'hello-world-language-server-worker'
