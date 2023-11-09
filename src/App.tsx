@@ -14,7 +14,7 @@ import MonacoEditorReactCompExtended from './MonacoEditorReactCompExtended';
 import { useState } from 'react';
 buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
 
-const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}): UserConfig => {
+const getUserConfig = (workerUrl: URL, model: {code?:string, uri?: string}): UserConfig => {
   const serviceConfig = {
     userServices: {
       ...getConfigurationServiceOverride(Uri.file('/workspace')),
@@ -51,8 +51,9 @@ const getUserConfig = (lsWorker: Worker, model: {code?:string, uri?: string}): U
     wrapperConfig,
     languageClientConfig: {
       options: {
-        $type: 'WorkerDirect' as const,
-        worker: lsWorker,
+        $type: 'WorkerConfig' as const,
+        url: workerUrl,
+        type: "classic" as const,
       },
     },
   };
@@ -70,21 +71,20 @@ function App() {
   const [otherFileUri, setOtherFileUri] = useState<string>("memory://others-demo.hello");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [otherFileContent, setOtherFileContent] = useState<string>("person Person1 person Person2");
+  const [isOtherFiles1, setOtherFiles1] = useState(true);
 
   // const workerRef = useRef<Worker>();
-  // useEffect(() => {
-  //   workerRef.current = new Wo
-  // }, []);
-
+  // if (workerRef.current) {
+  //   console.log("terminate");
+  //   workerRef.current.terminate();
+  // }
   const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
-  // TODO find out why the component wiredly recycles the old worker otherwise
-  // workerURL.searchParams.set('xxxx', otherFileUri);
-  const lsWorker = new Worker(workerURL.href, {
-    type: 'classic' as const,
-    name: 'hello-world-language-server-worker'
-  });
+  // workerRef.current = new Worker(workerURL.href, {
+  //   type: 'classic' as const,
+  //   name: 'hello-world-language-server-worker'
+  // });
 
-  const userConfig = getUserConfig(lsWorker, {
+  const userConfig = getUserConfig(workerURL, {
     code: "person A Hello A! Hello Person1!",
     uri: "demo.hello"
   } )
@@ -95,8 +95,14 @@ function App() {
 
   function handleOnClick() {
     console.log("handleOnClick");
-    setOtherFileUri("memory://others-demo2.hello");
-    setOtherFileContent("person Person3 person Person4");
+    if (isOtherFiles1) {
+      setOtherFileUri("memory://others-demo2.hello");
+      setOtherFileContent("person Person3 person Person4");
+    } else {
+      setOtherFileUri("memory://others-demo.hello");
+      setOtherFileContent("person Person1 person Person2");
+    }
+    setOtherFiles1(!isOtherFiles1);
   }
   // 
   return (
