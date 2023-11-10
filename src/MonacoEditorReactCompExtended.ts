@@ -21,7 +21,7 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
   override isReInitRequired(prevProps: MonacoEditorPropsExtended): boolean {
     const result = super.isReInitRequired(prevProps);
     console.log("isReInitRequired", result);
-    return false;
+    return result;
   }
 
   override async initMonaco() {
@@ -46,7 +46,7 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
   }
 
   override async componentDidUpdate(prevProps: MonacoEditorPropsExtended) {
-    console.log("argggggg ", prevProps.otherFileUri);
+    console.log("componentDidUpdate ", prevProps.otherFileUri);
     await super.componentDidUpdate(prevProps);
     if (
       prevProps.otherFileContent !== this.props.otherFileContent ||
@@ -55,25 +55,27 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
       const lc = this.getEditorWrapper().getLanguageClient();
       console.log("lc2", lc !== undefined);
       console.log(this.props.otherFileContent);
-    //   await lc?.sendNotification("textDocument/didClose", {
-    //     textDocument: {
-    //       uri: prevProps.otherFileUri,
-    //     },
-    //   });
+      //   await lc?.sendNotification("textDocument/didClose", {
+      //     textDocument: {
+      //       uri: prevProps.otherFileUri,
+      //     },
+      //   });
 
-    //   const result = await lc?.sendRequest("workspace/didDeleteFiles", {
-    //     files: [{
-    //       uri: prevProps.otherFileUri,
-    //     }],
-    //   });
+      //   const result = await lc?.sendRequest("workspace/didDeleteFiles", {
+      //     files: [{
+      //       uri: prevProps.otherFileUri,
+      //     }],
+      //   });
 
+      // currently close does not work on server side
       await lc?.sendNotification("workspace/didChangeWatchedFiles", {
-        changes: [{
-          uri: prevProps.otherFileUri,
-          type: 3 // deleted
-        }],
+        changes: [
+          {
+            uri: prevProps.otherFileUri,
+            type: 3, // deleted
+          },
+        ],
       });
-
 
       await lc?.sendNotification("textDocument/didOpen", {
         textDocument: {
