@@ -13,7 +13,7 @@
     "@codingame/monaco-vscode-configuration-service-override": "^1.83.5",
     "@codingame/monaco-vscode-editor-service-override": "^1.83.5",
     "@codingame/monaco-vscode-files-service-override": "^1.83.5",
-    "@typefox/monaco-editor-react": "^2.4.0-next.4",
+    "@typefox/monaco-editor-react": "^2.4.0-next.5",
     "monaco-editor": "npm:@codingame/monaco-editor-treemended@>=1.83.5 <1.84.0",
     "monaco-languageclient": "~7.0.0",
     "monaco-editor-workers": "^0.44.0",
@@ -35,11 +35,11 @@
     "@types/vscode": "^1.83.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "@vitejs/plugin-react": "^4.0.3",
+    "@vitejs/plugin-react": "^4.1.1",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.5.0"
   }
 }
