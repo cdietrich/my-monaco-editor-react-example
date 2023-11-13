@@ -55,11 +55,12 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
       const lc = this.getEditorWrapper().getLanguageClient();
       console.log("lc2", lc !== undefined);
       console.log(this.props.otherFileContent);
-        await lc?.sendNotification("textDocument/didClose", {
-          textDocument: {
-            uri: prevProps.otherFileUri,
-          },
-        });
+      // see https://github.com/cdietrich/hello-world-sem-tokens/blob/794c53b13763fe1f94d81c2d2d0e42133533cc82/src/language/main-browser.ts#L22
+      await lc?.sendNotification("textDocument/didClose", {
+        textDocument: {
+          uri: prevProps.otherFileUri,
+        },
+      });
 
       //   const result = await lc?.sendRequest("workspace/didDeleteFiles", {
       //     files: [{
