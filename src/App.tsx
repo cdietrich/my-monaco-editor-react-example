@@ -68,7 +68,7 @@ const getUserConfig = (workerUrl: URL, model: {code?:string, uri?: string}): Use
 
 function App() {
 
-  const [otherFileUri, setOtherFileUri] = useState<string>("memory://others-demo.hello");
+  const [otherFileUri, setOtherFileUri] = useState<string>("others-demo.hello");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [otherFileContent, setOtherFileContent] = useState<string>("person Person1 person Person2");
   const [isOtherFiles1, setOtherFiles1] = useState(true);
@@ -96,10 +96,10 @@ function App() {
   function handleOnClick() {
     console.log("handleOnClick");
     if (isOtherFiles1) {
-      setOtherFileUri("memory://others-demo2.hello");
+      setOtherFileUri("others-demo2.hello");
       setOtherFileContent("person Person3 person Person4");
     } else {
-      setOtherFileUri("memory://others-demo.hello");
+      setOtherFileUri("others-demo.hello");
       setOtherFileContent("person Person1 person Person2");
     }
     setOtherFiles1(!isOtherFiles1);
