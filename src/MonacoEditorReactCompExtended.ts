@@ -9,7 +9,7 @@ import { Uri } from 'monaco-editor';
 // or should we just use composition/wrapping?
 export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp<MonacoEditorPropsExtended> {
   
-  modelRefRef: IReference<ITextFileEditorModel> | undefined
+  modelRefRef: IReference<ITextFileEditorModel>[] = []
   /*implements Component<MonacoEditorPropsExtended>*/ constructor(
     props: MonacoEditorPropsExtended
   ) {
@@ -22,8 +22,9 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
   }
 
   override componentWillUnmount(): void {
-    if (this.modelRefRef) {
-      this.modelRefRef.dispose()
+    for (const ref of this.modelRefRef) {
+      console.log("disssssssppppoooooosssse")
+      ref.dispose();
     }
     super.componentWillUnmount()
   }
@@ -46,11 +47,14 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
     await super.startMonaco();
     const lc = this.getEditorWrapper().getLanguageClient();
     console.log("lc", lc !== undefined);
-    console.log(this.props.otherFileContent);
+    console.log(JSON.stringify(this.props.otherFiles));
 
-    const modelRef = await createModelReference(Uri.parse(this.props.otherFileUri), this.props.otherFileContent)
-    modelRef.object.setLanguageId("hello");
-    this.modelRefRef = modelRef
+    for (const otherFile of this.props.otherFiles) {
+      const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
+      modelRef.object.setLanguageId("hello");
+      this.modelRefRef.push(modelRef)
+    }
+    
     // await lc?.sendNotification("textDocument/didOpen", {
     //   textDocument: {
     //     uri: this.props.otherFileUri,
@@ -61,20 +65,33 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
     // });
   }
 
+  differs(prevProps: MonacoEditorPropsExtended) {
+    if (prevProps.otherFiles.length !== this.props.otherFiles.length) {
+      return true
+    }
+    for (let i = 0; i < this.props.otherFiles.length; i++) {
+      if (
+        prevProps.otherFiles[i].content !== this.props.otherFiles[i].content ||
+        prevProps.otherFiles[i].uri !== this.props.otherFiles[i].uri
+      )
+      return true
+    }
+    return false
+  }
+
   override async componentDidUpdate(prevProps: MonacoEditorPropsExtended) {
-    console.log("componentDidUpdate ", prevProps.otherFileUri);
+    console.log("componentDidUpdate ");
     await super.componentDidUpdate(prevProps);
     if (
-      prevProps.otherFileContent !== this.props.otherFileContent ||
-      prevProps.otherFileUri !== this.props.otherFileUri
+     this.differs(prevProps)
     ) {
       const lc = this.getEditorWrapper().getLanguageClient();
       console.log("lc2", lc !== undefined);
-      console.log(this.props.otherFileContent);
+      //console.log(this.props.otherFileContent);
       // see https://github.com/cdietrich/hello-world-sem-tokens/blob/794c53b13763fe1f94d81c2d2d0e42133533cc82/src/language/main-browser.ts#L22
-      if (this.modelRefRef) {
+      for (const ref of this.modelRefRef) {
         console.log("disssssssppppoooooosssse")
-        this.modelRefRef.dispose();
+        ref.dispose();
       }
       // await lc?.sendNotification("textDocument/didClose", {
       //   textDocument: {
@@ -100,9 +117,11 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
       // vscode.workspace.openTextDocument(this.props.otherFileUri, {
       //   content: this.props.otherFileContent,
       // })
-      const modelRef = await createModelReference(Uri.parse(this.props.otherFileUri), this.props.otherFileContent)
-      modelRef.object.setLanguageId("hello");
-      this.modelRefRef = modelRef
+      for (const otherFile of this.props.otherFiles) {
+        const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
+        modelRef.object.setLanguageId("hello");
+        this.modelRefRef.push(modelRef)
+      }
       // await lc?.sendNotification("textDocument/didOpen", {
       //   textDocument: {
       //     uri: this.props.otherFileUri,
@@ -116,6 +135,7 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
 }
 
 export type MonacoEditorPropsExtended = MonacoEditorProps & {
-  otherFileContent: string;
-  otherFileUri: string;
+  otherFiles: Model[];
 };
+
+export type Model = { content: string; uri: string }

@@ -10,7 +10,7 @@ import { Uri } from 'vscode';
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
 // import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
 // import { RegisteredFileSystemProvider, registerFileSystemOverlay, RegisteredMemoryFile } from '@codingame/monaco-vscode-files-service-override';
-import MonacoEditorReactCompExtended from './MonacoEditorReactCompExtended';
+import MonacoEditorReactCompExtended, { Model } from './MonacoEditorReactCompExtended';
 import { useState } from 'react';
 buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
 
@@ -68,9 +68,10 @@ const getUserConfig = (workerUrl: URL, model: {code?:string, uri?: string}): Use
 
 function App() {
 
-  const [otherFileUri, setOtherFileUri] = useState<string>("others-demo.hello");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [otherFileContent, setOtherFileContent] = useState<string>("person Person1 person Person2");
+  const [otherFiles, setOtherFiles] = useState<Model[]>([
+    {uri:  "others-demo.hello", content: "person Person1 person Person2"},
+    {uri:  "another-demo.hello", content: "person Person5"}
+   ]);
   const [isOtherFiles1, setOtherFiles1] = useState(true);
 
   // const workerRef = useRef<Worker>();
@@ -96,11 +97,15 @@ function App() {
   function handleOnClick() {
     console.log("handleOnClick");
     if (isOtherFiles1) {
-      setOtherFileUri("others-demo2.hello");
-      setOtherFileContent("person Person3 person Person4");
+      setOtherFiles([
+        {uri:  "others-demo2.hello", content: "person Person3 person Person4"},
+        {uri:  "another-demo.hello", content: "person Person5"}
+       ])
     } else {
-      setOtherFileUri("others-demo.hello");
-      setOtherFileContent("person Person1 person Person2");
+      setOtherFiles([
+        {uri:  "others-demo.hello", content: "person Person1 person Person2"},
+        {uri:  "another-demo.hello", content: "person Person5"}
+       ])
     }
     setOtherFiles1(!isOtherFiles1);
   }
@@ -112,8 +117,7 @@ function App() {
     // key={new Date().toISOString() /* without this the updated monaco seems to not usable at all */}  
     userConfig={userConfig}
     onLoad={onLoad}
-    otherFileContent={otherFileContent}
-    otherFileUri={otherFileUri}
+    otherFiles={otherFiles}
     style={{
       paddingTop: '5px',
       height: '40vh',
