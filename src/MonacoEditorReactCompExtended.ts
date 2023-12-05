@@ -9,7 +9,7 @@ import { Uri } from 'monaco-editor';
 // or should we just use composition/wrapping?
 export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp<MonacoEditorPropsExtended> {
   
-  modelRefRef: IReference<ITextFileEditorModel>[] = []
+  modelRefRef = new Map<string,IReference<ITextFileEditorModel>>
   /*implements Component<MonacoEditorPropsExtended>*/ constructor(
     props: MonacoEditorPropsExtended
   ) {
@@ -22,10 +22,11 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
   }
 
   override componentWillUnmount(): void {
-    for (const ref of this.modelRefRef) {
+    for (const ref of this.modelRefRef.values()) {
       console.log("disssssssppppoooooosssse")
       ref.dispose();
     }
+    this.modelRefRef.clear();
     super.componentWillUnmount()
   }
 
@@ -47,12 +48,12 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
     await super.startMonaco();
     const lc = this.getEditorWrapper().getLanguageClient();
     console.log("lc", lc !== undefined);
-    console.log(JSON.stringify(this.props.otherFiles));
+    // console.log(JSON.stringify(this.props.otherFiles));
 
     for (const otherFile of this.props.otherFiles) {
       const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
       modelRef.object.setLanguageId("hello");
-      this.modelRefRef.push(modelRef)
+      this.modelRefRef.set(otherFile.uri, modelRef)
     }
     
     // await lc?.sendNotification("textDocument/didOpen", {
@@ -81,7 +82,8 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
 
   override async componentDidUpdate(prevProps: MonacoEditorPropsExtended) {
     console.log("componentDidUpdate ");
-    await super.componentDidUpdate(prevProps);
+    console.log(this.props.userConfig.wrapperConfig.editorAppConfig.codeUri)
+    
     if (
      this.differs(prevProps)
     ) {
@@ -89,15 +91,23 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
       console.log("lc2", lc !== undefined);
       //console.log(this.props.otherFileContent);
       // see https://github.com/cdietrich/hello-world-sem-tokens/blob/794c53b13763fe1f94d81c2d2d0e42133533cc82/src/language/main-browser.ts#L22
-      for (const ref of this.modelRefRef) {
-        console.log("disssssssppppoooooosssse")
-        ref.dispose();
+      const newUris = new Set(this.props.otherFiles.map(f => f.uri))
+      
+      for (const otherFile of this.modelRefRef.keys()) {
+        if (!newUris.has(otherFile)) {
+          this.modelRefRef.get(otherFile)?.dispose();
+          this.modelRefRef.delete(otherFile);
+        }
+        // console.log("disssssssppppoooooosssse " + ref.object)
+        // await ref.dispose();
+        // console.log("client closing ", otherFile.uri)      
+        // await lc?.sendNotification("textDocument/didClose", {
+        // textDocument: {
+        //   uri: "file:///"+otherFile.uri,
+        // },
+        //});
       }
-      // await lc?.sendNotification("textDocument/didClose", {
-      //   textDocument: {
-      //     uri: prevProps.otherFileUri,
-      //   },
-      // });
+
 
       //   const result = await lc?.sendRequest("workspace/didDeleteFiles", {
       //     files: [{
@@ -118,19 +128,32 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
       //   content: this.props.otherFileContent,
       // })
       for (const otherFile of this.props.otherFiles) {
-        const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
-        modelRef.object.setLanguageId("hello");
-        this.modelRefRef.push(modelRef)
+        
+        if (this.modelRefRef.has(otherFile.uri)) {
+          console.log("updating " + otherFile.uri)
+          this.modelRefRef.get(otherFile.uri)?.object.textEditorModel?.setValue(otherFile.content)
+        } else {
+          console.log("activating " + otherFile.uri, otherFile.content)
+            const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
+            modelRef.object.setLanguageId("hello");
+            this.modelRefRef.set(otherFile.uri, modelRef)
+        }
+        // console.log(otherFile.content)
+        // const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
+        // modelRef.object.setLanguageId("hello");
+        // this.modelRefRef.push(modelRef)
+        // await lc?.sendNotification("textDocument/didOpen", {
+        //   textDocument: {
+        //     uri: otherFile.uri,
+        //     version: 1,
+        //     text: otherFile.content,
+        //     languageId: "hello",
+        //   },
+        // });
       }
-      // await lc?.sendNotification("textDocument/didOpen", {
-      //   textDocument: {
-      //     uri: this.props.otherFileUri,
-      //     version: 1,
-      //     text: this.props.otherFileContent,
-      //     languageId: "hello",
-      //   },
-      // });
+    
     }
+    await super.componentDidUpdate(prevProps);
   }
 }
 
