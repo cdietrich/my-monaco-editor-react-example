@@ -16,9 +16,20 @@ buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/worke
 
 const getUserConfig = (workerUrl: URL, model: {code?:string, uri?: string}): UserConfig => {
   const serviceConfig = {
+    workspaceConfig: {
+      workspaceProvider: {
+        trusted: true,
+        workspace: {
+          workspaceUri: Uri.file("/workspace"),
+        },
+        async open() {
+          return false;
+        },
+      },
+    },
     userServices: {
-      ...getConfigurationServiceOverride(Uri.file('/workspace')),
-    //   ...getEditorServiceOverride(useOpenEditorStub),
+      ...getConfigurationServiceOverride(),
+      //   ...getEditorServiceOverride(useOpenEditorStub),
     },
     debugLogging: true,
   };
