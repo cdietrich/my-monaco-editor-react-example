@@ -14,7 +14,7 @@ import MonacoEditorReactCompExtended, { Model } from './MonacoEditorReactCompExt
 import { useState } from 'react';
 buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
 
-const getUserConfig = (workerUrl: URL, model: {code?:string, uri?: string}): UserConfig => {
+const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
   const serviceConfig = {
     workspaceConfig: {
       workspaceProvider: {
@@ -40,7 +40,7 @@ const getUserConfig = (workerUrl: URL, model: {code?:string, uri?: string}): Use
     editorAppConfig: {
       $type: 'classic' as const,
       languageId,
-      code: model?.code ?? 'No Model specified',
+      code: model?.content ?? 'No Model specified',
       codeUri: model?.uri ?? 'dummy.hello',
       useDiffEditor: false,
       editorOptions: {
@@ -97,7 +97,7 @@ function App() {
   // });
 
   const userConfig = getUserConfig(workerURL, {
-    code: "person A Hello A! Hello Person1!",
+    content: "person A Hello A! Hello Person1!",
     uri: "demo.hello"
   } )
 
