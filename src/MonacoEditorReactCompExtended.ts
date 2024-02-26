@@ -52,7 +52,7 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
 
     for (const otherFile of this.props.otherFiles) {
       const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
-      modelRef.object.setLanguageId("hello");
+      modelRef.object.setLanguageId(this.props.userConfig.wrapperConfig.editorAppConfig.languageId);
       this.modelRefRef.set(otherFile.uri, modelRef)
     }
     
@@ -135,7 +135,7 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
         } else {
           console.log("activating " + otherFile.uri, otherFile.content)
             const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
-            modelRef.object.setLanguageId("hello");
+            modelRef.object.setLanguageId(this.props.userConfig.wrapperConfig.editorAppConfig.languageId);
             this.modelRefRef.set(otherFile.uri, modelRef)
         }
         // console.log(otherFile.content)
