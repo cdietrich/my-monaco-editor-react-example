@@ -4,7 +4,7 @@
 // import './App.css'
 // import { MonacoEditorReactComp } from '@typefox/monaco-editor-react'
 import { UserConfig, WrapperConfig } from 'monaco-editor-wrapper'
-import { buildWorkerDefinition } from 'monaco-editor-workers';
+import { useWorkerFactory } from 'monaco-editor-wrapper/workerFactory';
 import { Uri } from 'vscode';
 // import { useOpenEditorStub } from 'monaco-languageclient';
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
@@ -12,7 +12,21 @@ import getConfigurationServiceOverride from '@codingame/monaco-vscode-configurat
 // import { RegisteredFileSystemProvider, registerFileSystemOverlay, RegisteredMemoryFile } from '@codingame/monaco-vscode-files-service-override';
 import MonacoEditorReactCompExtended, { Model } from './MonacoEditorReactCompExtended';
 import { useState } from 'react';
-buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
+
+export const configureMonacoWorkers = () => {
+  // override the worker factory with your own direct definition
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useWorkerFactory({
+      ignoreMapping: true,
+      workerLoaders: {
+          editorWorkerService: () => {
+            const url = new URL('monaco-editor/esm/vs/editor/editor.worker.js', import.meta.url);
+            return new Worker(url, { type: 'module' })
+          },
+      }
+  });
+};
+configureMonacoWorkers()
 
 const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
   const serviceConfig = {
