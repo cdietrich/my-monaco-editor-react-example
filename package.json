@@ -10,24 +10,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@codingame/monaco-vscode-configuration-service-override": "~1.85.0",
-    "@codingame/monaco-vscode-editor-service-override": "~1.85.0",
-    "@codingame/monaco-vscode-files-service-override": "~1.85.0",
-    "@typefox/monaco-editor-react": "^2.6.0",
-    "monaco-editor": "npm:@codingame/monaco-editor-treemended@>=1.85.0 <1.86.0",
-    "monaco-languageclient": "~7.3.0",
+    "@codingame/monaco-vscode-configuration-service-override": "~3.1.1",
+    "@codingame/monaco-vscode-editor-service-override": "~3.1.1",
+    "@codingame/monaco-vscode-files-service-override": "~3.1.1",
+    "@typefox/monaco-editor-react": "~3.0.0-next.4",
+    "monaco-languageclient": "~8.0.0-next.4",
     "monaco-editor-workers": "^0.45.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "vscode": "npm:@codingame/monaco-vscode-api@>=1.85.0 <1.86.0"
+    "vscode": "npm:@codingame/monaco-vscode-api@~3.1.1"
   },
   "overrides": {
-    "monaco-editor": "$monaco-editor",
     "vscode": "$vscode"
   },
   "resolutions": {
-    "monaco-editor": "npm:@codingame/monaco-editor-treemended@>=1.85.0 <1.86.0",
-    "vscode": "npm:@codingame/monaco-vscode-api@>=1.85.0 <1.86.0"
+    "vscode": "npm:@codingame/monaco-vscode-api@~3.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
