@@ -86,10 +86,6 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
     if (
      this.differs(prevProps)
     ) {
-      const lc = this.getEditorWrapper().getLanguageClient();
-      console.log("lc2", lc !== undefined);
-      //console.log(this.props.otherFileContent);
-      // see https://github.com/cdietrich/hello-world-sem-tokens/blob/794c53b13763fe1f94d81c2d2d0e42133533cc82/src/language/main-browser.ts#L22
       const newUris = new Set(this.props.otherFiles.map(f => f.uri))
       
       for (const otherFile of this.modelRefRef.keys()) {
@@ -97,35 +93,7 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
           this.modelRefRef.get(otherFile)?.dispose();
           this.modelRefRef.delete(otherFile);
         }
-        // console.log("disssssssppppoooooosssse " + ref.object)
-        // await ref.dispose();
-        // console.log("client closing ", otherFile.uri)      
-        // await lc?.sendNotification("textDocument/didClose", {
-        // textDocument: {
-        //   uri: "file:///"+otherFile.uri,
-        // },
-        //});
       }
-
-
-      //   const result = await lc?.sendRequest("workspace/didDeleteFiles", {
-      //     files: [{
-      //       uri: prevProps.otherFileUri,
-      //     }],
-      //   });
-
-      // currently close does not work on server side
-      // await lc?.sendNotification("workspace/didChangeWatchedFiles", {
-      //   changes: [
-      //     {
-      //       uri: prevProps.otherFileUri,
-      //       type: 3, // deleted
-      //     },
-      //   ],
-      // });
-      // vscode.workspace.openTextDocument(this.props.otherFileUri, {
-      //   content: this.props.otherFileContent,
-      // })
       for (const otherFile of this.props.otherFiles) {
         
         if (this.modelRefRef.has(otherFile.uri)) {
@@ -137,18 +105,6 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
             modelRef.object.setLanguageId((this.props.userConfig.wrapperConfig.editorAppConfig as EditorAppConfigClassic).languageDef?.languageExtensionConfig?.id ?? "mimimi");
             this.modelRefRef.set(otherFile.uri, modelRef)
         }
-        // console.log(otherFile.content)
-        // const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
-        // modelRef.object.setLanguageId("hello");
-        // this.modelRefRef.push(modelRef)
-        // await lc?.sendNotification("textDocument/didOpen", {
-        //   textDocument: {
-        //     uri: otherFile.uri,
-        //     version: 1,
-        //     text: otherFile.content,
-        //     languageId: "hello",
-        //   },
-        // });
       }
     
     }

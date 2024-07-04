@@ -58,15 +58,6 @@ const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
           extensions: [`.hello`],
         },
       },
-      // languageExtensionConfig: { id: languageId },
-      //languageDef: monarchGrammar,
-      // themeData: LangiumTheme,
-      // theme: 'langium-theme',
-      // userConfiguration: {
-      //   //   // or configure the semantic highlighting like this:
-      //   //   // `{ json: "editor.semanticHighlighting.enabled": true }`
-      //   json: '{"editor.semanticHighlighting.enabled": true}',
-      // },
     },
   };
 
