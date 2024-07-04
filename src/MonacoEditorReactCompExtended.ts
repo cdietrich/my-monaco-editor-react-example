@@ -49,22 +49,11 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
     await super.startMonaco();
     const lc = this.getEditorWrapper().getLanguageClient();
     console.log("lc", lc !== undefined);
-    // console.log(JSON.stringify(this.props.otherFiles));
-
     for (const otherFile of this.props.otherFiles) {
       const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
       modelRef.object.setLanguageId((this.props.userConfig.wrapperConfig.editorAppConfig as EditorAppConfigClassic).languageDef?.languageExtensionConfig?.id ?? "mimimi");
       this.modelRefRef.set(otherFile.uri, modelRef)
     }
-    
-    // await lc?.sendNotification("textDocument/didOpen", {
-    //   textDocument: {
-    //     uri: this.props.otherFileUri,
-    //     version: 1,
-    //     text: this.props.otherFileContent,
-    //     languageId: "hello",
-    //   },
-    // });
   }
 
   differs(prevProps: MonacoEditorPropsExtended) {
