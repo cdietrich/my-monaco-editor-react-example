@@ -37,13 +37,14 @@ const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
   };
   
   const languageId = 'hello';
+  const fileExt = '.hello';
   const wrapperConfig: WrapperConfig = {
     serviceConfig,
     editorAppConfig: {
       $type: 'classic' as const,
       codeResources: {
         main: {
-          fileExt: ".hello",
+          fileExt,
           text: model?.content ?? 'No Model specified',
           uri: model?.uri ?? 'dummy.hello',
         }
@@ -55,7 +56,7 @@ const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
       languageDef: {
         languageExtensionConfig: {
           id: languageId,
-          extensions: [`.hello`],
+          extensions: [fileExt],
         },
       },
     },
@@ -98,16 +99,7 @@ function App() {
    ]);
   const [isOtherFiles1, setOtherFiles1] = useState(true);
 
-  // const workerRef = useRef<Worker>();
-  // if (workerRef.current) {
-  //   console.log("terminate");
-  //   workerRef.current.terminate();
-  // }
   const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
-  // workerRef.current = new Worker(workerURL.href, {
-  //   type: 'classic' as const,
-  //   name: 'hello-world-language-server-worker'
-  // });
 
   const userConfig = getUserConfig(workerURL, {
     content: "person A Hello A! Hello Person1!",
@@ -138,7 +130,6 @@ function App() {
     <div className="lulu">
       <button onClick={handleOnClick}>Click Me!</button>
       <MonacoEditorReactCompExtended
-    // key={new Date().toISOString() /* without this the updated monaco seems to not usable at all */}  
     userConfig={userConfig}
     onLoad={onLoad}
     otherFiles={otherFiles}
