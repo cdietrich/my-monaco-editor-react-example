@@ -94,8 +94,8 @@ const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
 function App() {
 
   const [otherFiles, setOtherFiles] = useState<Model[]>([
-    {uri:  "others-demo.hello", content: "person Person1 person Person2"},
-    {uri:  "another-demo.hello", content: "person Person5"}
+    {uri:  "others-demo.hello", content: "person Person1 person Person2", languageId: 'hello'},
+    {uri:  "another-demo.hello", content: "person Person5", languageId: 'hello'}
    ]);
   const [isOtherFiles1, setOtherFiles1] = useState(true);
 
@@ -103,7 +103,8 @@ function App() {
 
   const userConfig = getUserConfig(workerURL, {
     content: "person A Hello A! Hello Person1!",
-    uri: "demo.hello"
+    uri: "demo.hello",
+    languageId: "hello",
   } )
 
   const onLoad = () => {
@@ -114,13 +115,13 @@ function App() {
     console.log("handleOnClick");
     if (isOtherFiles1) {
       setOtherFiles([
-        {uri:  "others-demo2.hello", content: "person Person3 person Person4"},
-        {uri:  "another-demo.hello", content: "person Person5"}
+        {uri:  "others-demo2.hello", content: "person Person3 person Person4",languageId: "hello"},
+        {uri:  "another-demo.hello", content: "person Person5",languageId: "hello"}
        ])
     } else {
       setOtherFiles([
-        {uri:  "others-demo.hello", content: "person Person1 person Person2"},
-        {uri:  "another-demo.hello", content: "person Person5"}
+        {uri:  "others-demo.hello", content: "person Person1 person Person2",languageId: "hello"},
+        {uri:  "another-demo.hello", content: "person Person5",languageId: "hello"}
        ])
     }
     setOtherFiles1(!isOtherFiles1);
