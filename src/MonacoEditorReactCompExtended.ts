@@ -5,6 +5,7 @@ import {
 // import { Component } from "react";
 import { IReference, ITextFileEditorModel, createModelReference } from 'vscode/monaco';
 import { Uri } from 'monaco-editor';
+import { EditorAppConfigClassic } from "monaco-editor-wrapper"
 // TODO is subclassing the right idea?
 // or should we just use composition/wrapping?
 export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp<MonacoEditorPropsExtended> {
@@ -52,7 +53,7 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
 
     for (const otherFile of this.props.otherFiles) {
       const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
-      modelRef.object.setLanguageId(this.props.userConfig.wrapperConfig.editorAppConfig.languageId);
+      modelRef.object.setLanguageId((this.props.userConfig.wrapperConfig.editorAppConfig as EditorAppConfigClassic).languageDef?.languageExtensionConfig?.id ?? "mimimi");
       this.modelRefRef.set(otherFile.uri, modelRef)
     }
     
@@ -81,8 +82,6 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
   }
 
   override async componentDidUpdate(prevProps: MonacoEditorPropsExtended) {
-    console.log("componentDidUpdate ");
-    console.log(this.props.userConfig.wrapperConfig.editorAppConfig.codeUri)
     
     if (
      this.differs(prevProps)
@@ -135,7 +134,7 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
         } else {
           console.log("activating " + otherFile.uri, otherFile.content)
             const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
-            modelRef.object.setLanguageId(this.props.userConfig.wrapperConfig.editorAppConfig.languageId);
+            modelRef.object.setLanguageId((this.props.userConfig.wrapperConfig.editorAppConfig as EditorAppConfigClassic).languageDef?.languageExtensionConfig?.id ?? "mimimi");
             this.modelRefRef.set(otherFile.uri, modelRef)
         }
         // console.log(otherFile.content)

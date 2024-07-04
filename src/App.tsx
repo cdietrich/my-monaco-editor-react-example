@@ -4,7 +4,7 @@
 // import './App.css'
 // import { MonacoEditorReactComp } from '@typefox/monaco-editor-react'
 import { UserConfig, WrapperConfig } from 'monaco-editor-wrapper'
-import { buildWorkerDefinition } from 'monaco-editor-workers';
+// import { buildWorkerDefinition } from 'monaco-editor-workers';
 import { Uri } from 'vscode';
 // import { useOpenEditorStub } from 'monaco-languageclient';
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
@@ -12,7 +12,9 @@ import getConfigurationServiceOverride from '@codingame/monaco-vscode-configurat
 // import { RegisteredFileSystemProvider, registerFileSystemOverlay, RegisteredMemoryFile } from '@codingame/monaco-vscode-files-service-override';
 import MonacoEditorReactCompExtended, { Model } from './MonacoEditorReactCompExtended';
 import { useState } from 'react';
-buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
+//buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
+
+
 
 const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
   const serviceConfig = {
@@ -39,14 +41,24 @@ const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
     serviceConfig,
     editorAppConfig: {
       $type: 'classic' as const,
-      languageId,
-      code: model?.content ?? 'No Model specified',
-      codeUri: model?.uri ?? 'dummy.hello',
+      codeResources: {
+        main: {
+          fileExt: ".hello",
+          text: model?.content ?? 'No Model specified',
+          uri: model?.uri ?? 'dummy.hello',
+        }
+      },
       useDiffEditor: false,
       editorOptions: {
         'semanticHighlighting.enabled': true,
       },
-      languageExtensionConfig: { id: languageId },
+      languageDef: {
+        languageExtensionConfig: {
+          id: languageId,
+          extensions: [`.hello`],
+        },
+      },
+      // languageExtensionConfig: { id: languageId },
       //languageDef: monarchGrammar,
       // themeData: LangiumTheme,
       // theme: 'langium-theme',
@@ -61,12 +73,22 @@ const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
   const userConfig: UserConfig = {
     wrapperConfig,
     languageClientConfig: {
+      languageId,
       options: {
-        $type: 'WorkerConfig' as const,
-        url: workerUrl,
-        type: "classic" as const,
+        $type: "WorkerDirect",
+        worker: new Worker(workerUrl),
       },
-    },
+    }
+    
+    
+    
+    // {
+    //   options: {
+    //     $type: 'WorkerConfig' as const,
+    //     url: workerUrl,
+    //     type: "classic" as const,
+    //   },
+    // },
   };
   return userConfig;
 };
