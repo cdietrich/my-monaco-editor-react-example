@@ -72,7 +72,9 @@ function App() {
    ]);
   const [isOtherFiles1, setOtherFiles1] = useState(true);
 
-  const [modelContent, setModelContent] = useState("person A Hello A! Hello Person1!")
+  const initialModel = "person A Hello A! Hello Person1!";
+  const [modelContent, setModelContent] = useState(initialModel)
+  const [modelContent2, setModelContent2] = useState(initialModel)
 
   const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
 
@@ -108,7 +110,7 @@ function App() {
     userConfig={userConfig}
     onLoad={onLoad}
     otherFiles={otherFiles}
-    onTextChanged={(text) => { setModelContent(text.main) }}
+    onTextChanged={(text) => { setModelContent2(text.main) }}
     style={{
       paddingTop: '5px',
       height: '40vh',
@@ -117,9 +119,14 @@ function App() {
     
         />
         <textarea
-        value={modelContent}
+        value={modelContent2}
         style={{width: '90%', height: '40vh'}}
-        onChange={(e) => setModelContent(e.target.value)}/>
+        onChange={(e) => {
+          const newValue = e.target.value;
+          if (newValue !== modelContent) { // Only update if the value has changed
+            setModelContent(newValue);
+          }
+        }}/>
     </div>
   )
 }
