@@ -72,10 +72,12 @@ function App() {
    ]);
   const [isOtherFiles1, setOtherFiles1] = useState(true);
 
+  const [modelContent, setModelContent] = useState("person A Hello A! Hello Person1!")
+
   const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
 
   const userConfig = getUserConfig(workerURL, {
-    content: "person A Hello A! Hello Person1!",
+    content: modelContent,
     uri: "demo.hello",
     languageId: "hello",
   } )
@@ -107,6 +109,7 @@ function App() {
     userConfig={userConfig}
     onLoad={onLoad}
     otherFiles={otherFiles}
+    onTextChanged={(text) => { setModelContent(text.main) }}
     style={{
       paddingTop: '5px',
       height: '40vh',
@@ -114,6 +117,9 @@ function App() {
     }}
     
         />
+        <textarea
+        value={modelContent}
+        onChange={(e) => setModelContent(e.target.value)}/>
     </div>
   )
 }
