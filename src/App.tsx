@@ -113,12 +113,13 @@ function App() {
     style={{
       paddingTop: '5px',
       height: '40vh',
-      width: '100%',
+      width: '90%',
     }}
     
         />
         <textarea
         value={modelContent}
+        style={{width: '90%', height: '40vh'}}
         onChange={(e) => setModelContent(e.target.value)}/>
     </div>
   )
