@@ -55,8 +55,9 @@ const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
     languageClientConfig: {
       languageId,
       options: {
-        $type: "WorkerDirect",
-        worker: new Worker(workerUrl),
+        $type: "WorkerConfig",
+        url: workerUrl,
+        type: "classic",
       },
     }
   };
