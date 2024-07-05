@@ -83,11 +83,10 @@ function App() {
   } )
 
   const onLoad = () => {
-    console.log("mimiimi onLoad");
+    console.log("mimimi onLoad");
   }
 
   function handleOnClick() {
-    console.log("handleOnClick");
     if (isOtherFiles1) {
       setOtherFiles([
         {uri:  "others-demo2.hello", content: "person Person3 person Person4",languageId: "hello"},

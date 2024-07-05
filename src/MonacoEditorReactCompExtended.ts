@@ -45,8 +45,6 @@ export default class MonacoEditorReactCompExtended extends MonacoEditorReactComp
   override async startMonaco() {
     console.log("startMonaco");
     await super.startMonaco();
-    const lc = this.getEditorWrapper().getLanguageClient();
-    console.log("lc", lc !== undefined);
     for (const otherFile of this.props.otherFiles) {
       const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
       modelRef.object.setLanguageId(otherFile.languageId);
