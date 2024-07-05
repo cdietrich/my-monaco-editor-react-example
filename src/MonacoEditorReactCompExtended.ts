@@ -2,7 +2,6 @@ import {
   MonacoEditorProps,
   MonacoEditorReactComp,
 } from "@typefox/monaco-editor-react";
-// import { Component } from "react";
 import { IReference, ITextFileEditorModel, createModelReference } from 'vscode/monaco';
 import { Uri } from 'monaco-editor';
 // TODO is subclassing the right idea?

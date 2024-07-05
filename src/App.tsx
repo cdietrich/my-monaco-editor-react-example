@@ -1,20 +1,8 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-// import { MonacoEditorReactComp } from '@typefox/monaco-editor-react'
 import { UserConfig, WrapperConfig } from 'monaco-editor-wrapper'
-// import { buildWorkerDefinition } from 'monaco-editor-workers';
 import { Uri } from 'vscode';
-// import { useOpenEditorStub } from 'monaco-languageclient';
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
-// import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
-// import { RegisteredFileSystemProvider, registerFileSystemOverlay, RegisteredMemoryFile } from '@codingame/monaco-vscode-files-service-override';
 import MonacoEditorReactCompExtended, { Model } from './MonacoEditorReactCompExtended';
 import { useState } from 'react';
-//buildWorkerDefinition('../../../../node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
-
-
 
 const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
   const serviceConfig = {
@@ -71,25 +59,9 @@ const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
         worker: new Worker(workerUrl),
       },
     }
-    
-    
-    
-    // {
-    //   options: {
-    //     $type: 'WorkerConfig' as const,
-    //     url: workerUrl,
-    //     type: "classic" as const,
-    //   },
-    // },
   };
   return userConfig;
 };
-
-
-
-// const fileSystemProvider = new RegisteredFileSystemProvider(true);
-// fileSystemProvider.registerFile(new RegisteredMemoryFile(Uri.file('/workspace/other.hello'), 'person Xxxxx person Yyyyyy'));
-// registerFileSystemOverlay(1, fileSystemProvider); 
 
 function App() {
 
