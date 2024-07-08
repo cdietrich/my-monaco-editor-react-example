@@ -72,15 +72,27 @@ function App() {
    ]);
   const [isOtherFiles1, setOtherFiles1] = useState(true);
 
+  const [otherFiles2, setOtherFiles2] = useState<Model[]>([
+    {uri:  "others-demo2.hello", content: "person Person6 person Person7", languageId: 'hello'},
+    {uri:  "another-demo2.hello", content: "person Person8", languageId: 'hello'}
+   ]);
+
   const initialModel = "person A Hello A! Hello Person1!";
+  const initialModel2 = "person AA Hello AA! Hello Person8!";
   const [modelContent, setModelContent] = useState(initialModel)
-  const [modelContent2, setModelContent2] = useState(initialModel)
+  const [modelContent2, setModelContent2] = useState(initialModel2)
 
   const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
 
   const userConfig = getUserConfig(workerURL, {
     content: modelContent,
     uri: "demo.hello",
+    languageId: "hello",
+  } )
+
+  const userConfig2 = getUserConfig(workerURL, {
+    content: modelContent2,
+    uri: "demo2.hello",
     languageId: "hello",
   } )
 
@@ -110,7 +122,6 @@ function App() {
     userConfig={userConfig}
     onLoad={onLoad}
     otherFiles={otherFiles}
-    onTextChanged={(text) => { setModelContent2(text.main) }}
     style={{
       paddingTop: '5px',
       height: '40vh',
@@ -118,15 +129,18 @@ function App() {
     }}
     
         />
-        <textarea
-        value={modelContent2}
-        style={{width: '90%', height: '40vh'}}
-        onChange={(e) => {
-          const newValue = e.target.value;
-          if (newValue !== modelContent) { // Only update if the value has changed
-            setModelContent(newValue);
-          }
-        }}/>
+
+<MonacoEditorReactCompExtended
+    userConfig={userConfig2}
+    onLoad={onLoad}
+    otherFiles={otherFiles2}
+    style={{
+      paddingTop: '5px',
+      height: '40vh',
+      width: '90%',
+    }}
+    
+        />
     </div>
   )
 }
