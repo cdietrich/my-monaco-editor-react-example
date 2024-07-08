@@ -83,6 +83,7 @@ function App() {
   const [modelContent2, setModelContent2] = useState(initialModel2)
 
   const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
+  const workerURL2 = new URL('./hello-world-server-worker.js?x=y', window.location.origin);
 
   const userConfig = getUserConfig(workerURL, {
     content: modelContent,
@@ -90,7 +91,7 @@ function App() {
     languageId: "hello",
   } )
 
-  const userConfig2 = getUserConfig(workerURL, {
+  const userConfig2 = getUserConfig(workerURL2, {
     content: modelContent2,
     uri: "demo2.hello",
     languageId: "hello",
