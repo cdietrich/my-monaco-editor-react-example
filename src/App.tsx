@@ -1,67 +1,99 @@
-import { UserConfig, WrapperConfig } from 'monaco-editor-wrapper'
+import getConfigurationServiceOverride from "@codingame/monaco-vscode-configuration-service-override"
+import getKeybindingsServiceOverride from "@codingame/monaco-vscode-keybindings-service-override"
+import { useWorkerFactory } from "monaco-editor-wrapper/workerFactory"
+import type { languages } from "monaco-editor"
+import { WrapperConfig } from 'monaco-editor-wrapper'
 import { Uri } from 'vscode';
-import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
 import MonacoEditorReactCompExtended, { Model } from './MonacoEditorReactCompExtended';
 import { useState } from 'react';
+import type { Logger } from "monaco-languageclient/tools"
+const languageId = 'hello';
 
-const getUserConfig = (workerUrl: URL, model: Model): UserConfig => {
-  const serviceConfig = {
-    workspaceConfig: {
-      workspaceProvider: {
-        trusted: true,
-        workspace: {
-          workspaceUri: Uri.file("/workspace"),
-        },
-        async open() {
-          return false;
-        },
+
+const getUserConfig = (
+  workerUrl: string,
+  fileExt: string,
+  htmlElement: HTMLElement,
+  model: Model,
+  monarch?: languages.IMonarchLanguage,)
+  
+  
+  
+   : WrapperConfig => {
+  //const fileExt = model.uri.split('.').pop() ?? 'hello';
+  const loadLangiumWorker = () => {
+    console.log(`Langium worker URL: ${workerUrl}`)
+    const workerURL = new URL('./hello-world-server-worker.js', window.location.origin)
+    return new Worker(workerURL, {
+      type: "module",
+      name: "Lotse Language Server Worker",
+    })
+  }
+  const langiumWorker = loadLangiumWorker()
+  return {
+    $type: "classic",
+    htmlContainer: htmlElement,
+    vscodeApiConfig: {
+      serviceOverrides: {
+        ...getConfigurationServiceOverride(),
+        //...getEditorServiceOverride(useOpenEditorStub),
+        ...getKeybindingsServiceOverride(),
       },
     },
-    userServices: {
-      ...getConfigurationServiceOverride(),
-      //   ...getEditorServiceOverride(useOpenEditorStub),
-    },
-    debugLogging: true,
-  };
-  
-  const languageId = 'hello';
-  const fileExt = '.hello';
-  const wrapperConfig: WrapperConfig = {
-    serviceConfig,
     editorAppConfig: {
-      $type: 'classic' as const,
       codeResources: {
-        main: {
+        modified: {
+          text: model.content,
           fileExt,
-          text: model?.content ?? 'No Model specified',
-          uri: model?.uri ?? 'dummy.hello',
-        }
+          enforceLanguageId: model.languageId,
+        },
       },
       useDiffEditor: false,
-      editorOptions: {
-        'semanticHighlighting.enabled': true,
-      },
       languageDef: {
+        monarchLanguage: monarch,
         languageExtensionConfig: {
-          id: languageId,
-          extensions: [fileExt],
+          id: model.languageId,
+          extensions: [`.${fileExt}`],
+        },
+      },
+      editorOptions: {
+        "semanticHighlighting.enabled": true,
+        theme: "vs-dark",
+      },
+      monacoWorkerFactory: (logger?: Logger) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useWorkerFactory({
+          logger,
+          workerOverrides: {
+            ignoreMapping: true,
+            workerLoaders: {
+              TextEditorWorker: () => {
+                return new Worker(new URL("../libs/monaco-editor-workers/editorWorker-es.js", import.meta.url), {
+                  type: "module",
+                })
+              },
+            },
+          },
+        })
+      },
+    },
+    languageClientConfigs: {
+      lotse: {
+        connection: {
+          options: {
+            $type: "WorkerDirect",
+            worker: langiumWorker,
+          },
+        },
+        clientOptions: {
+          documentSelector: [languageId],
         },
       },
     },
-  };
+  }
 
-  const userConfig: UserConfig = {
-    wrapperConfig,
-    languageClientConfig: {
-      languageId,
-      options: {
-        $type: "WorkerConfig",
-        url: workerUrl,
-        type: "classic",
-      },
-    }
-  };
-  return userConfig;
+
+
 };
 
 function App() {
@@ -76,9 +108,11 @@ function App() {
   const [modelContent, setModelContent] = useState(initialModel)
   const [modelContent2, setModelContent2] = useState(initialModel)
 
-  const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
+  //const workerURL = new URL('./hello-world-server-worker.js', window.location.origin);
 
-  const userConfig = getUserConfig(workerURL, {
+  const wrapperConfig = getUserConfig(
+    
+    './hello-world-server-worker.js', "hello", document.getElementById('root')!, {
     content: modelContent,
     uri: "demo.hello",
     languageId: "hello",
@@ -107,10 +141,10 @@ function App() {
     <div className="lulu">
       <button onClick={handleOnClick}>Click Me!</button>
       <MonacoEditorReactCompExtended
-    userConfig={userConfig}
+      otherFiles={otherFiles}
+      wrapperConfig={wrapperConfig}
     onLoad={onLoad}
-    otherFiles={otherFiles}
-    onTextChanged={(text) => { setModelContent2(text.main) }}
+    // onTextChanged={(text) => { setModelContent2(text.main) }}
     style={{
       paddingTop: '5px',
       height: '40vh',
@@ -118,7 +152,9 @@ function App() {
     }}
     
         />
-        <textarea
+
+   
+        {/* <textarea
         value={modelContent2}
         style={{width: '90%', height: '40vh'}}
         onChange={(e) => {
@@ -126,7 +162,7 @@ function App() {
           if (newValue !== modelContent) { // Only update if the value has changed
             setModelContent(newValue);
           }
-        }}/>
+        }}/>  */}
     </div>
   )
 }
