@@ -1,7 +1,7 @@
 import getConfigurationServiceOverride from "@codingame/monaco-vscode-configuration-service-override"
 import getKeybindingsServiceOverride from "@codingame/monaco-vscode-keybindings-service-override"
-import { useWorkerFactory } from "monaco-editor-wrapper/workerFactory"
-import type { languages } from "monaco-editor"
+import { useWorkerFactory, type WorkerLoader } from 'monaco-languageclient/workerFactory';
+import type * as monaco from "@codingame/monaco-vscode-editor-api"
 import { WrapperConfig } from 'monaco-editor-wrapper'
 import { Uri } from 'vscode';
 import MonacoEditorReactCompExtended, { Model } from './MonacoEditorReactCompExtended';
@@ -9,13 +9,27 @@ import { useState } from 'react';
 import type { Logger } from "monaco-languageclient/tools"
 const languageId = 'hello';
 
+const defineDefaultWorkerLoaders: () => Record<string, WorkerLoader> = () => {
+  return {
+    TextEditorWorker: () => new Worker(
+      new URL('@codingame/monaco-vscode-editor-api/esm/vs/editor/editor.worker.js', import.meta.url),
+      { type: 'module' }
+    ),
+    // these are other possible workers not configured by default
+    TextMateWorker: undefined,
+    OutputLinkDetectionWorker: undefined,
+    LanguageDetectionWorker: undefined,
+    NotebookEditorWorker: undefined,
+    LocalFileSearchWorker: undefined,
+  }
+}
 
 const getUserConfig = (
   workerUrl: string,
   fileExt: string,
   htmlElement: HTMLElement,
   model: Model,
-  monarch?: languages.IMonarchLanguage,)
+  monarch?: monaco.languages.IMonarchLanguage,)
   
   
   
@@ -61,19 +75,9 @@ const getUserConfig = (
         theme: "vs-dark",
       },
       monacoWorkerFactory: (logger?: Logger) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         useWorkerFactory({
+          workerLoaders: defineDefaultWorkerLoaders(),
           logger,
-          workerOverrides: {
-            ignoreMapping: true,
-            workerLoaders: {
-              TextEditorWorker: () => {
-                return new Worker(new URL("../libs/monaco-editor-workers/editorWorker-es.js", import.meta.url), {
-                  type: "module",
-                })
-              },
-            },
-          },
         })
       },
     },

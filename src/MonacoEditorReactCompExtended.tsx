@@ -2,11 +2,12 @@ import {
   MonacoEditorProps,
   MonacoEditorReactComp,
 } from "@typefox/monaco-editor-react";
-import { Uri } from "monaco-editor";
-import { MonacoEditorLanguageClientWrapper, WrapperConfig } from "monaco-editor-wrapper";
-import { CSSProperties, useEffect } from "react";
-import { createModelReference, IReference, ITextFileEditorModel } from "vscode/monaco";
-
+import { Uri } from "vscode";
+import { useEffect } from "react";
+import { createModelReference, type ITextFileEditorModel } from '@codingame/monaco-vscode-api/monaco';
+import {
+  IReference,
+} from '@codingame/monaco-vscode-views-service-override'
 // TODO is subclassing the right idea?
 // or should we just use composition/wrapping?
 
@@ -22,6 +23,7 @@ useEffect(() => {
   // This return function is equivalent to componentWillUnmount
   async function viech() {
     for (const otherFile of props.otherFiles ?? []) {
+      console.log("gogogogo")
       const modelRef = await createModelReference(Uri.parse(otherFile.uri), otherFile.content)
       modelRef.object.setLanguageId(otherFile.languageId);
       modelRefRef.set(otherFile.uri, modelRef)
