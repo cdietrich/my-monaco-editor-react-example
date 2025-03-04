@@ -82,17 +82,22 @@ const getUserConfig = (
       },
     },
     languageClientConfigs: {
-      lotse: {
-        connection: {
-          options: {
-            $type: "WorkerDirect",
-            worker: langiumWorker,
+      automaticallyDispose: true,
+      automaticallyInit: true,
+      automaticallyStart: true,
+      configs: {
+        lotse: {
+          connection: {
+            options: {
+              $type: "WorkerDirect",
+              worker: langiumWorker,
+            },
+          },
+          clientOptions: {
+            documentSelector: [languageId],
           },
         },
-        clientOptions: {
-          documentSelector: [languageId],
-        },
-      },
+      }
     },
   }
 
