@@ -82,9 +82,6 @@ const getUserConfig = (
       },
     },
     languageClientConfigs: {
-      automaticallyDispose: true,
-      automaticallyInit: true,
-      automaticallyStart: true,
       configs: {
         lotse: {
           connection: {
