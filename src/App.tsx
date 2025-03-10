@@ -3,7 +3,6 @@ import getKeybindingsServiceOverride from "@codingame/monaco-vscode-keybindings-
 import { useWorkerFactory, type WorkerLoader } from 'monaco-languageclient/workerFactory';
 import type * as monaco from "@codingame/monaco-vscode-editor-api"
 import { WrapperConfig } from 'monaco-editor-wrapper'
-import { Uri } from 'vscode';
 import MonacoEditorReactCompExtended, { Model } from './MonacoEditorReactCompExtended';
 import { useState } from 'react';
 import type { Logger } from "monaco-languageclient/tools"
@@ -58,7 +57,7 @@ const getUserConfig = (
       codeResources: {
         modified: {
           text: model.content,
-          fileExt,
+          uri: model.uri,
           enforceLanguageId: model.languageId,
         },
       },
